@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="이 홈페이지는 ThreeJS를 활용한 간단한 미니 게임입니다."
+    />
+    <meta
+      name="keywords"
+      content="ThreeJS, Click-All, Click, Remove, Timerush, 클릭, 지우기, 타임어택"
+    />
+    <title>Click-All</title>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+      #ui {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: #fff;
+        font-size: 18px;
+        z-index: 10;
+      }
+      #start-btn {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #ff5252;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+      #info {
+        background: rgba(0, 0, 0, 0.5);
+
+        padding: 8px;
+        border-radius: 8px;
+      }
+      #result {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        color: #fff;
+        text-align: center;
+        border-radius: 12px;
+        z-index: 100;
+      }
+      #result button {
+        margin-top: 10px;
+        padding: 8px 16px;
+        background: #4caf50;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.174.0/examples/jsm/",
+          "gsap": "https://cdn.skypack.dev/gsap"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="three-canvas"></canvas>
+
+    <!-- UI -->
+    <div id="ui">
+      <button id="start-btn">게임 시작</button>
+      <div id="info">
+        <p>남은 타겟: <span id="remaining">0</span></p>
+        <p>시간: <span id="timer">0.00</span>초</p>
+        <p>점수: <span id="score">0</span></p>
+      </div>
+    </div>
+
+    <div id="result"></div>
+
+    <script src="./js/main.js" type="module"></script>
+  </body>
+</html>
