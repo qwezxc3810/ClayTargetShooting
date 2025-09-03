@@ -7,10 +7,10 @@ import { initCursor } from "./cursor.js";
 import { createTarget } from "./target.js";
 import { ClayShooterGame } from "./game.js";
 
-// 커서 작동
+// ------------------- 커서 -------------------
 initCursor();
 
-// 1. 기본 설정
+// ------------------- 기본 설정 -------------------
 const canvas = document.querySelector("#three-canvas");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -30,7 +30,7 @@ const initialCameraPosition = new THREE.Vector3(0, 10, 100);
 const initialControlsTarget = new THREE.Vector3(0, 5, 0);
 camera.position.copy(initialCameraPosition);
 
-// 2. 하늘 (Sky)
+// ------------------- 하늘 -------------------
 const sky = new Sky();
 sky.scale.setScalar(450000);
 scene.add(sky);
@@ -48,17 +48,47 @@ sun.setFromSphericalCoords(1, phi, theta);
 skyUniforms["sunPosition"].value.copy(sun);
 scene.environment = renderer.currentBackground = sky.material;
 
-// 3. 초원 (Plane)
-const groundGeometry = new THREE.PlaneGeometry(200, 200);
-const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x4caf50 });
+// ------------------- 초원 -------------------
+const groundSize = 200;
+const groundSegments = 100;
+const groundGeometry = new THREE.PlaneGeometry(
+  groundSize,
+  groundSize,
+  groundSegments,
+  groundSegments
+);
+
+// Vertex Colors 추가
+const colors = [];
+for (let i = 0; i < groundGeometry.attributes.position.count; i++) {
+  const baseGreen = 0.5 + Math.random() * 0.2; // 0.5~0.7 초록색
+  const r = 0.1 + Math.random() * 0.1; // 살짝 빨강 섞어 자연스럽게
+  const g = baseGreen;
+  const b = 0.1 + Math.random() * 0.1; // 살짝 파랑 섞어 자연스럽게
+  colors.push(r, g, b);
+}
+groundGeometry.setAttribute(
+  "color",
+  new THREE.Float32BufferAttribute(colors, 3)
+);
+
+const groundMaterial = new THREE.MeshLambertMaterial({ vertexColors: true });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// 4. 구름 (cloud)
+// 초원 초기 높이 노이즈 적용
+const originalPositions = groundGeometry.attributes.position.array.slice();
+for (let i = 0; i < groundGeometry.attributes.position.count; i++) {
+  const x = groundGeometry.attributes.position.getX(i);
+  const z = groundGeometry.attributes.position.getZ(i);
+  const y = noise2D(x * 0.05, z * 0.05) * 2; // 높이 조절
+  groundGeometry.attributes.position.setY(i, y);
+}
+groundGeometry.computeVertexNormals();
 
-// 5. 산 (Cone)
-function createMountain() {
+// ------------------- 산 -------------------
+function createMountain(offsetX = 0, offsetZ = 0) {
   const group = new THREE.Group();
   for (let i = 0; i < 3; i++) {
     const radius = 15 + Math.random() * 10;
@@ -77,94 +107,96 @@ function createMountain() {
     }
     geometry.computeVertexNormals();
     const mountain = new THREE.Mesh(geometry, material);
-    mountain.position.x = (Math.random() - 0.5) * 20;
+    mountain.position.x = offsetX + (Math.random() - 0.5) * 30;
     mountain.position.y = height / 2;
-    mountain.position.z = -50 + Math.random() * 10;
+    mountain.position.z = offsetZ + (Math.random() - 0.5) * 30;
     group.add(mountain);
   }
   return group;
 }
-const mountains1 = createMountain();
-mountains1.position.set(35, 0, 0);
-const mountains2 = createMountain();
-mountains2.position.set(70, 0, -20);
-const mountains3 = createMountain();
-mountains3.position.set(-35, 0, -10);
-const mountains4 = createMountain();
-mountains4.position.set(-70, 0, 10);
-scene.add(mountains1, mountains2, mountains3, mountains4);
 
-// 6. 조명
+scene.add(
+  createMountain(-60, -60),
+  createMountain(-20, -10),
+  createMountain(20, -60),
+  createMountain(50, -30)
+);
+
+// ------------------- 조명 -------------------
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(sun.x, sun.y, sun.z);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-scene.add(ambientLight);
+scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 
-// 7. OrbitControls
+// ------------------- OrbitControls -------------------
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.copy(initialControlsTarget);
 controls.update();
 
-// 카메라 초기화
+// ------------------- 카메라 초기화 -------------------
 function resetCamera() {
   camera.position.copy(initialCameraPosition);
   controls.target.copy(initialControlsTarget);
   controls.update();
 }
 
-// 8. 애니메이션
-function animate() {
+// ------------------- 애니메이션 -------------------
+let game = null;
+
+function animate(time) {
   requestAnimationFrame(animate);
-  if (game && game.isPlaying) {
-    controls.enabled = false;
-  } else {
-    controls.enabled = true;
-    controls.update();
+
+  // 초원 흔들림 (바람 효과)
+  const positions = groundGeometry.attributes.position.array;
+  for (let i = 0; i < groundGeometry.attributes.position.count; i++) {
+    const x = groundGeometry.attributes.position.getX(i);
+    const z = groundGeometry.attributes.position.getZ(i);
+    const baseY = originalPositions[i * 3 + 1]; // 원본 높이
+    const wind = noise2D(x * 0.1 + time * 0.001, z * 0.1 + time * 0.001) * 0.5;
+    groundGeometry.attributes.position.setY(i, baseY + wind);
   }
+  groundGeometry.attributes.position.needsUpdate = true;
+  groundGeometry.computeVertexNormals();
+
+  if (game && game.isPlaying) controls.enabled = false;
+  else controls.enabled = true;
   renderer.render(scene, camera);
 }
 
-// 게임 객체
-let game = null;
-
-// 초기화 화면 버튼 추가
+// ------------------- 초기화 화면 -------------------
 function showInitialScreen() {
   resetCamera();
-  if (game) {
-    game.resetToInitialScreen(); // 게임 객체 내부에서 초기화
-  }
+  if (game) game.resetToInitialScreen();
   document.getElementById("result").style.display = "none";
 }
 
-// 9. 게임 시작 버튼 클릭 이벤트
-document.getElementById("start-btn").addEventListener("click", () => {
-  // 3 → 2 → 1 → 게임 시작 텍스트 표시 (클릭으로 총알 차감되지 않음)
-  const btn = document.getElementById("start-btn");
-  btn.disabled = true;
+// ------------------- 게임 시작 버튼 -------------------
+const startBtn = document.getElementById("start-btn");
+startBtn.addEventListener("click", () => {
+  startBtn.disabled = true;
   let count = 3;
-  const originalText = btn.textContent;
   const countdown = setInterval(() => {
-    if (count > 0) {
-      btn.textContent = count;
-    } else {
+    if (count > 0) startBtn.textContent = count;
+    else {
       clearInterval(countdown);
-      btn.textContent = "게임 시작!";
+      startBtn.textContent = "게임 시작!";
       setTimeout(() => {
-        btn.style.display = "none";
+        startBtn.style.display = "none";
+        resetCamera();
         if (!game) game = new ClayShooterGame(scene, camera);
-        game.startGame(); // 총알 20개 부여 포함
+        game.startGame();
       }, 500);
     }
     count--;
   }, 500);
 });
 
-// 결과 화면에 초기화 및 재도전 버튼 추가
-animate();
+// ------------------- 리사이즈 이벤트 -------------------
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+animate();
