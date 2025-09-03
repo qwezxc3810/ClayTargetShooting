@@ -12,76 +12,7 @@
       content="ThreeJS, Click-All, Click, Remove, Timerush, 클릭, 지우기, 타임어택"
     />
     <title>Click-All</title>
-
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        cursor: none;
-      }
-      canvas {
-        display: block;
-      }
-      #cursor {
-        width: 12px;
-        height: 12px;
-        border: 1px solid red;
-        background: red;
-        border-radius: 50%;
-        position: fixed;
-        pointer-events: none; /* 클릭 이벤트에 방해되지 않도록 */
-        transform: translate(-50%, -50%);
-        transition: width 0.1s ease, height 0.1s ease, transform 0.05s ease; /* 부드러운 움직임 */
-        z-index: 10000;
-      }
-
-      #ui {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        color: #fff;
-        font-size: 18px;
-        z-index: 10;
-      }
-      #start-btn {
-        padding: 10px 20px;
-        font-size: 18px;
-        background-color: #ff5252;
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        cursor: none;
-        margin-bottom: 10px;
-      }
-      #info {
-        background: rgba(0, 0, 0, 0.5);
-
-        padding: 8px;
-        border-radius: 8px;
-      }
-      #result {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        color: #fff;
-        text-align: center;
-        border-radius: 12px;
-        z-index: 100;
-      }
-      #result button {
-        margin-top: 10px;
-        padding: 8px 16px;
-        background: #4caf50;
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        cursor: none;
-      }
-    </style>
+    <link rel="stylesheet" href="./style.css" />
 
     <script type="importmap">
       {
@@ -95,13 +26,19 @@
   </head>
   <body>
     <canvas id="three-canvas"></canvas>
-    <div id="cursor"></div>
+    <!-- 커서 -->
+    <div id="cursor">
+      <div class="cross horizontal"></div>
+      <div class="cross vertical"></div>
+      <div class="dot"></div>
+    </div>
 
     <!-- UI -->
     <div id="ui">
       <button id="start-btn">게임 시작</button>
       <div id="info">
         <p>남은 타겟: <span id="remaining">0</span></p>
+        <p>남은 총알 수: <span id="remaining-shots"></span></p>
         <p>시간: <span id="timer">0.00</span>초</p>
         <p>점수: <span id="score">0</span></p>
       </div>

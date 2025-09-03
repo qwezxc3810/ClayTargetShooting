@@ -1,0 +1,95 @@
+body {
+  margin: 0 auto;
+  overflow: hidden;
+  cursor: none;
+}
+canvas {
+  display: block;
+}
+#cursor {
+  position: fixed;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  z-index: 1000;
+}
+
+.cross {
+  position: absolute;
+  background-color: white;
+}
+
+.cross.horizontal {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.cross.vertical {
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#ui {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #fff;
+  font-size: 18px;
+  z-index: 10;
+}
+#start-btn {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #ff5252;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  cursor: none;
+  margin-bottom: 10px;
+}
+#info {
+  background: rgba(0, 0, 0, 0.5);
+
+  padding: 8px;
+  border-radius: 8px;
+}
+#result {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  z-index: 100;
+}
+#result button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #4caf50;
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+  cursor: none;
+}
