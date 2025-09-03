@@ -17,10 +17,24 @@
       body {
         margin: 0;
         overflow: hidden;
+        cursor: none;
       }
       canvas {
         display: block;
       }
+      #cursor {
+        width: 12px;
+        height: 12px;
+        border: 1px solid red;
+        background: red;
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none; /* 클릭 이벤트에 방해되지 않도록 */
+        transform: translate(-50%, -50%);
+        transition: width 0.1s ease, height 0.1s ease, transform 0.05s ease; /* 부드러운 움직임 */
+        z-index: 10000;
+      }
+
       #ui {
         position: absolute;
         top: 20px;
@@ -36,7 +50,7 @@
         border: none;
         color: #fff;
         border-radius: 8px;
-        cursor: pointer;
+        cursor: none;
         margin-bottom: 10px;
       }
       #info {
@@ -65,7 +79,7 @@
         border: none;
         color: #fff;
         border-radius: 8px;
-        cursor: pointer;
+        cursor: none;
       }
     </style>
 
@@ -81,6 +95,7 @@
   </head>
   <body>
     <canvas id="three-canvas"></canvas>
+    <div id="cursor"></div>
 
     <!-- UI -->
     <div id="ui">

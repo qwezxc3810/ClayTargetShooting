@@ -1,9 +1,45 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { Sky } from "three/addons/objects/Sky.js";
-import gsap from "gsap";
+import gsap from "https://cdn.skypack.dev/gsap";
+import { createNoise2D } from "https://cdn.skypack.dev/simplex-noise";
+
 import { createTarget } from "./target.js";
 import { ClayShooterGame } from "./game.js";
+
+const cursor = document.getElementById("cursor");
+let mouseX = 0;
+let mouseY = 0;
+let posX = 0;
+let posY = 0;
+
+document.addEventListener("mousemove", (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+// 애니메이션 루프에 부드럽게 따라오도록 추가
+function animateCursor() {
+  posX += (mouseX - posX) * 0.2; // 부드러운 추적
+  posY += (mouseY - posY) * 0.2;
+
+  cursor.style.left = posX + "px";
+  cursor.style.top = posY + "px";
+
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// 클릭 시 커서 확대
+document.addEventListener("mousedown", () => {
+  cursor.style.width = "36px";
+  cursor.style.height = "36px";
+});
+
+document.addEventListener("mouseup", () => {
+  cursor.style.width = "12px";
+  cursor.style.height = "12px";
+});
 
 // 1. 기본 설정 (장면, 카메라, 렌더러)
 const canvas = document.querySelector("#three-canvas");
@@ -14,6 +50,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+const noise2D = createNoise2D();
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -161,6 +198,24 @@ function createMountain() {
     const height = 20 + Math.random() * 15;
     const geometry = new THREE.ConeGeometry(radius, height, 32);
     const material = new THREE.MeshLambertMaterial({ color: 0x6b4226 });
+
+    // 정점 변형
+    const position = geometry.attributes.position;
+    const Vertex = new THREE.Vector3();
+    for (let j = 0; j < position.count; j++) {
+      Vertex.fromBufferAttribute(position, j);
+
+      const n = noise2D(Vertex.x * 0.1, Vertex.z * 0.1);
+
+      // 꼭대기근처는 덜 변형, 멀수록 변형 심하게
+      const amp = (Vertex.y / height) * 0.5 + 0.5;
+      Vertex.x += n * 4 * amp;
+      Vertex.z += n * 4 * amp;
+
+      position.setXYZ(j, Vertex.x, Vertex.y, Vertex.z);
+    }
+    geometry.computeVertexNormals();
+
     const mountain = new THREE.Mesh(geometry, material);
 
     mountain.position.x = (Math.random() - 0.5) * 20;
@@ -187,7 +242,7 @@ directionalLight.castShadow = true; // 그림자 생성
 scene.add(directionalLight);
 
 // 주변광 추가 (장면 전체 부드럽게 밝히기 위함)
-const ambientLight = new THREE.AmbientLight(0x404040); // 회색빛
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
 scene.add(ambientLight);
 
 // 7. OrbitControls 설정
@@ -226,6 +281,7 @@ document.getElementById("start-btn").addEventListener("click", () => {
   if (!game) {
     game = new ClayShooterGame(scene, camera);
   }
+
   game.startGame();
 });
 animate();
