@@ -126,16 +126,42 @@
 
 ## 🥅 프로젝트 진행 중 문제점과 해결 방법
 
-### 1. 목표물 클릭 감지
-**문제:** 3D 공간에서 마우스로 클릭한 타겟을 정확히 인식하기 어려움  
+### 1. 목표물 클릭 감지 및 커서 개선
+**문제:** 
+- 3D 공간에서 마우스 클릭 위치와 타겟 위치를 정확히 매칭하기 어려움  
+- 기본 브라우저 커서는 시각적 피드백이 부족하여 게임 몰입도 저하
 **해결 방법:**
+**Raycaster로 3D 클릭 감지**
 ```js
-initClickListener() {
 this.raycaster.setFromCamera(this.mouse, this.camera);
 const intersects = this.raycaster.intersectObjects(this.targetsOnScene);
-}
+intersects.forEach(({ object }) => {
+  this.scene.remove(object);
+  this.scoreValue++;
+  this.updateUI();
+});
 ```
+
 **Raycaster를 활용하여 클릭과 타겟 좌표 정확히 일치시킴**
+
+**커서 애니메이션 적용 (커스텀 커서)**
+```js
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+document.addEventListener("mousedown", () => {
+  gsap.to(cursor, { scale: 1.5, duration: 0.1, yoyo: true, repeat: 1 });
+});
+document.addEventListener("mouseup", () => {
+  gsap.to(cursor, { scale: 1, duration: 0.2, ease: "elastic.out(1,0.3)" });
+});
+```
+
+- **클릭 시 커서 확대/축소, 색상 변화 등 시각적 피드백 제공**
+
+- **게임 몰입도를 높이고, 타겟을 맞췄다는 감각적인 효과 강화**
 
 ### 2. 타겟 스폰 및 애니메이션
 **문제:** 여러 타겟이 동시에 생성될 때 자연스러운 이동 필요  
@@ -199,6 +225,7 @@ function resetCamera() {
 ## 📜 라이선스
 
 이 프로젝트는 MIT 라이선스를 따릅니다.
+
 
 
 
