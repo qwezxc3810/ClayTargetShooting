@@ -20,7 +20,7 @@
 - 이 프로젝트는 GitHub Pages를 통해 호스팅되고 있습니다. 따라서 별도의 설치 없이 웹 브라우저에서 바로 실행할 수 있습니다.
 
 
-- 🔗 **배포 주소:** [ClayTargetShooting 바로가기]([https://qwezxc3810.github.io/Click-All/]
+- 🔗 **배포 주소:** [ClayTargetShooting 바로가기]([https://qwezxc3810.github.io/ClayTargetShooting/]
 
 - 페이지 실행 후, 좌측 상단 게임 시작 버튼을 눌러 바로 플레이를 시작할 수 있습니다.
 
@@ -31,6 +31,7 @@
 - Three.js
 - HTML5
 - CSS3
+
 
 
 
