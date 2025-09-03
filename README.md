@@ -118,9 +118,11 @@ Three.js를 활용하여 3D 환경에서 목표물을 맞추는 간단한 슈팅
 ## 🛠️ 기술 스택
 - **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
 
-- **3D 라이브러리:** Three.js
+- **3D 라이브러리:** [Three.js](https://threejs.org/?utm_source=chatgpt.com)
 
-- **애니메이션:** GSAP
+- **애니메이션:** [GSAP](https://gsap.com/?utm_source=chatgpt.com)
+
+- **노이즈 기반 지형 생성:** [simplex-noise (createNoise2D)](https://www.npmjs.com/package/simplex-noise?utm_source=chatgpt.com)
 
 - **배포:** GitHub Pages
 
@@ -166,6 +168,7 @@ Three.js를 활용하여 3D 환경에서 목표물을 맞추는 간단한 슈팅
 ## 📜 라이선스
 
 이 프로젝트는 MIT 라이선스를 따릅니다.
+
 
 
 
