@@ -3,7 +3,7 @@
 웹페이지에서 바로 실행 가능한 간단한 클릭 미니게임입니다.  
 화면에 나타나는 목표를 클릭하여 점수를 얻고, 제한 시간 내에 가능한 한 많은 목표를 클릭하는 것이 목표입니다.
 
- 🔗 **배포 주소:** [ClayTargetShooting 바로가기]([https://qwezxc3810.github.io/ClayTargetShooting/]
+ 🔗 **배포 주소:** [ClayTargetShooting 바로가기](https://qwezxc3810.github.io/ClayTargetShooting/)  
 
  🔗 **GitHub Repo:** [Repository 링크](https://github.com/qwezxc3810/ClayTargetShooting)
 
@@ -40,6 +40,7 @@
 - Three.js
 - HTML5
 - CSS3
+
 
 
 
