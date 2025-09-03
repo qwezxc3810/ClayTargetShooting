@@ -5,7 +5,7 @@
 
  🔗 **배포 주소:** [ClayTargetShooting 바로가기](https://qwezxc3810.github.io/ClayTargetShooting/)  
 
- 🔗 **GitHub Repo:** [Repository 링크](https://github.com/qwezxc3810/ClayTargetShooting)
+ 🔗 **GitHub Repo:** [Github 링크](https://github.com/qwezxc3810/ClayTargetShooting)
 
  ---
 
@@ -40,6 +40,7 @@
 - Three.js
 - HTML5
 - CSS3
+
 
 
 
