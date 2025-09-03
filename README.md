@@ -129,7 +129,7 @@
 ### 1. 목표물 클릭 감지
 **문제:** 3D 공간에서 마우스로 클릭한 타겟을 정확히 인식하기 어려움  
 **해결 방법:**
-```
+```js
 initClickListener() {
 this.raycaster.setFromCamera(this.mouse, this.camera);
 const intersects = this.raycaster.intersectObjects(this.targetsOnScene);
@@ -141,7 +141,7 @@ const intersects = this.raycaster.intersectObjects(this.targetsOnScene);
 **문제:** 여러 타겟이 동시에 생성될 때 자연스러운 이동 필요  
 **해결 방법:** 
 
-```
+```js
 gsap.to(target.position, {
   z: -100,
   duration: 5,
@@ -154,7 +154,7 @@ gsap.to(target.position, {
 ### 3. 게임 재시작 시 초기화
 **문제:** 게임 재시작 시 타겟, 점수, 시간 초기화 필요  
 **해결 방법:**
-```
+```js
 clearInterval(this.spawnInterval);
 clearInterval(this.timerInterval);
 this.targetsOnScene.forEach(t => t.parent && this.scene.remove(t));
@@ -171,7 +171,7 @@ this.updateUI()
 ### 4. 게임 시작 준비
 **문제:** 게임 시작 버튼을 누르면 바로 게임이 시작되어 준비시간 부족 및 버튼 클릭도 클릭수로 포함
 **해결 방법:**
-```
+```js
 let count = 3;
 const countdown = setInterval(() => {
   if (count > 0) startBtn.textContent = count;
@@ -185,7 +185,7 @@ const countdown = setInterval(() => {
 ### 5. 게임 시작 시 카메라 시점 고정
 **문제:** 자유 시점에서 게임 시작 시 목표물 맞추기 어려움
 **해결 방법:**
-```
+```js
 function resetCamera() {
   camera.position.copy(initialCameraPosition);
   controls.target.copy(initialControlsTarget);
@@ -199,6 +199,7 @@ function resetCamera() {
 ## 📜 라이선스
 
 이 프로젝트는 MIT 라이선스를 따릅니다.
+
 
 
 
